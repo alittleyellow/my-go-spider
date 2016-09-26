@@ -3,7 +3,7 @@ import (
 	"common/request"
 	"downloader"
 	"fmt"
-	"io/ioutil"
+	// "io/ioutil"
 	"net/http"
 )
 
@@ -17,17 +17,13 @@ func main() {
 		},
 		&http.Cookie{
 			Name : "_servant_key",
-	        Value : "2be13887cdb66026a3509c8c98ec308d",
+	        Value : "41330d4ffd845bc32ac0942852706a1c",
 	        Path : "/",
 	        HttpOnly: false,
 		},
 	}
-	req := request.NewRequestWithHeaderFile("http://wx.qima-inc.com/dashboard/user/receivedUserList.json", "html", "", cookie)
+	req := request.NewRequestWithHeaderFile("http://wx.qima-inc.com/dashboard/user/receivedUserList.json", "json", "", cookie)
 	downloaderObject := downloader.NewHttpDownloader();
-	resp, _ := downloaderObject.DownloadHtml(req)
-	if resp.StatusCode == 200 {
-        body, _ := ioutil.ReadAll(resp.Body)
-        bodystr := string(body);
-        fmt.Println(bodystr)
-    }
+	p := downloaderObject.Download(req)
+	fmt.Println(p.GetJson());
 }
