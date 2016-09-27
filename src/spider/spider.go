@@ -11,19 +11,18 @@ import (
 	"common/page"
 	"time"
 	"math/rand"
-	"fmt"
 )
 
 type Spider struct {
 	taskname string
 
-    pPageProcesser page_processer.PageProcesser
+    pPageProcesser page_processer.PageProcesser //处理页面接口类 实现了他的方法即可
 
-    pDownloader *downloader.HttpDownloader
+    pDownloader *downloader.HttpDownloader //页面下载类
 
-    pScheduler scheduler.Scheduler
+    pScheduler scheduler.Scheduler //任务控制类 负责爬取得url的分发
 
-    pPiplelines []pipeline.Pipeline
+    pPiplelines []pipeline.Pipeline //
 
     mc resource_manage.ResourceManage
 
@@ -38,7 +37,6 @@ type Spider struct {
 }
 
 func NewSpider(pageinst page_processer.PageProcesser, taskname string) *Spider {
-	fmt.Println("new spider")
 	ap := &Spider{pPageProcesser: pageinst, taskname: taskname}
 	ap.exitWhenComplete = true
 	ap.sleeptype = "fixed"
@@ -133,13 +131,12 @@ func (this *Spider) Run() {
 			continue
 		}
 		this.mc.GetOne()
-
+		fmt.Println(1)
 		go func(req *request.Request) {
 			defer this.mc.FreeOne()
 			this.pageProcess(req)
 		}(req)
 	}
-
 	this.close()
 }
 
@@ -227,5 +224,12 @@ func (this *Spider) AddUrlsEx(urls []string, respType string, headerFile string,
         req := request.NewRequest(url, respType, "GET", "", "", nil, nil, "", nil, nil)
         this.AddRequest(req.AddHeaderFile(headerFile).AddProxyHost(proxyHost))
     }
+
     return this
+}
+
+func (this *Spider) SetThreadnum(num uint) *Spider {
+	this.threadnum = num
+
+	return this
 }
