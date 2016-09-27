@@ -27,9 +27,9 @@ func NewHttpDownloader() *HttpDownloader {
 func (this *HttpDownloader) Download(req *request.Request) *page.Page {
 	var p = page.NewPage(req);
 	mtype := req.GetResponceType()
-	fmt.Println(mtype)
 	switch mtype {
 	case "html":
+		// fmt.Println(this.DownloadHtml(p, req))
 		return this.DownloadHtml(p, req)
 	case "json":
 		return this.DownloadJson(p, req)

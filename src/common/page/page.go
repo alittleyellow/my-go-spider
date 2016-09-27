@@ -94,6 +94,25 @@ func (this *Page) GetJson() *simplejson.Json {
     return this.jsonMap
 }
 
+func (this *Page) GetTargetRequests() []*request.Request {
+    return this.targetRequests
+}
+
+func (this *Page) GetPageItems() *page_items.PageItems{
+    return this.pItems
+}
+
+func (this *Page) GetSkip() bool {
+    return this.pItems.GetSkip()
+}
+
+func (this *Page) GetHtmlParser() *goquery.Document {
+    return this.docParser
+}
+
+func (this *Page) AddField(key string, value string) {
+    this.pItems.AddItem(key, value)
+}
 
 
 

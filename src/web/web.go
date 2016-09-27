@@ -1,29 +1,56 @@
 package main 
 import (
+	"spider"
+	"common/page"
 	"common/request"
-	"downloader"
 	"fmt"
-	// "io/ioutil"
-	"net/http"
+	"strings"
 )
+type MyPageProcesser struct {
+
+}
+
+func NewMyPageProcesser() *MyPageProcesser{
+	return &MyPageProcesser{}
+}
+
+func (this *MyPageProcesser) Process(p *page.Page) {
+	if !p.IsSuccess() {
+		return 
+	}
+	query := p.GetHtmlParser()
+	name := query.Find("h1").Text()
+    name = strings.Trim(name, " \t\n")
+    fmt.Println(name)
+    summary := query.Find(".card-summary-content .para").Text()
+    summary = strings.Trim(summary, " \t\n")
+
+    // the entity we want to save by Pipeline
+    p.AddField("name", name)
+    p.AddField("summary", summary)
+}
+
+func (this *MyPageProcesser) Finish() {
+	fmt.Printf("TODO:before end spider \r\n")
+}
+
 
 func main() {
-	cookie := []*http.Cookie{
-		&http.Cookie{
-			Name : "_servant_value",
-	        Value : "149",
-	        Path : "/",
-	        HttpOnly: false,
-		},
-		&http.Cookie{
-			Name : "_servant_key",
-	        Value : "41330d4ffd845bc32ac0942852706a1c",
-	        Path : "/",
-	        HttpOnly: false,
-		},
-	}
-	req := request.NewRequestWithHeaderFile("http://wx.qima-inc.com/dashboard/user/receivedUserList.json", "json", "", cookie)
-	downloaderObject := downloader.NewHttpDownloader();
-	p := downloaderObject.Download(req)
-	fmt.Println(p.GetJson());
+	sp := spider.NewSpider(NewMyPageProcesser(), "myFirstTaskName")
+	req := request.NewRequest("https://bbs.youzan.com/forum.php?mod=viewthread&tid=543951", "html", "GET", "", "", nil, nil, "", nil, nil)
+	pageItems := sp.GetByRequest(req)
+	for name, _ := range pageItems.GetAll() {
+		fmt.Println(name)
+    }
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -30,10 +30,9 @@ type Request struct {
 	Meta interface{}
 }
 
-func NewRequest(url, respType, method, postData, urlTag string, header *http.Header, cookies []*http.Cookie,
-	proxyHost string, checkRedirect func(req *http.Request, via []*http.Request) error, meta interface{}) *Request {
+func NewRequest(url, respType, method, postData, urlTag string, header http.Header, cookies []*http.Cookie, proxyHost string, checkRedirect func(req *http.Request, via []*http.Request) error, meta interface{}) *Request {
 	
-	return &Request{url, respType, method, postData, urlTag, *header, cookies, proxyHost, checkRedirect, meta}
+	return &Request{url, respType, method, postData, urlTag, header, cookies, proxyHost, checkRedirect, meta}
 }
 
 func NewRequestWithHeaderFile(url, respType, headerFile string, cookies []*http.Cookie) *Request {
