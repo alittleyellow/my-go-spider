@@ -131,7 +131,6 @@ func (this *Spider) Run() {
 			continue
 		}
 		this.mc.GetOne()
-		fmt.Println(1)
 		go func(req *request.Request) {
 			defer this.mc.FreeOne()
 			this.pageProcess(req)
